@@ -1,20 +1,28 @@
 #!/usr/bin/env npx ts-node
 
 import program from "commander";
+import { table } from "table";
 import { version } from "../package.json";
-import { list2Json } from "./list2json";
+import { list2Json, list2Formated } from "./list2json";
 
-const getObject = (userContent: string) =>
-  list2Json(userContent, program.title, !program.last, program.space);
+const getObject = (
+  content: string,
+  titleLine: number,
+  ignoreLast: boolean,
+  ignoreSpace: number
+) => list2Json(content, titleLine, ignoreLast, ignoreSpace);
 
-const parseContent = (content: string) =>
-  new Promise(resolve => {
+const getList = (content: string, ignoreLast: boolean, ignoreSpace: number) =>
+  list2Formated(content, ignoreLast, ignoreSpace);
+
+const getContent = (content: string) =>
+  new Promise<string>(resolve => {
     if (content) {
-      resolve(getObject(content));
+      resolve(content);
     } else {
       process.stdin.on("data", chunk => {
-        let userContent = chunk.toString();
-        resolve(getObject(userContent));
+        let chunkContent = chunk.toString();
+        resolve(chunkContent);
       });
     }
   });
@@ -22,27 +30,56 @@ const parseContent = (content: string) =>
 program.version(version);
 
 program
-  .arguments("[content]")
-  .option("-d, --display <type>", "display type", "json")
-  .option("-t,--title <number>", "index of title line", 0)
+  .command("json [content]")
+  .description("output json string of list")
+  .option(
+    "-t,--title <number>",
+    "index of title line",
+    value => parseInt(value),
+    0
+  )
   .option(
     "-s,--space <number>",
     "number of space between colum to be ignore when split",
+    value => parseInt(value),
     0
   )
   .option("--no-last", "ignore last line")
   .action(content => {
-    parseContent(content).then(result => {
-      switch (program.display) {
-        case "table":
-          console.log("not finish");
-          break;
-        default:
-          console.log(JSON.stringify(result));
-          break;
-      }
+    getContent(content).then(content => {
+      const obj = getObject(
+        content,
+        program.title,
+        !program.last,
+        program.space
+      );
+      console.log(JSON.stringify(obj));
       process.exit(0);
     });
+  });
+
+program
+  .command("table [content]")
+  .description("draw table of list")
+  .option(
+    "-s,--space <number>",
+    "number of space between colum to be ignore when split",
+    value => parseInt(value),
+    0
+  )
+  .option("--no-last", "ignore last line")
+  .action(content => {
+    getContent(content)
+      .then(content => {
+        const list = getList(content, !program.last, program.space);
+        const output = table(list, {});
+        console.log(output);
+        process.exit(0);
+      })
+      .catch(err => {
+        console.error(err);
+        process.exit(0);
+      });
   });
 
 program.parse(process.argv);
