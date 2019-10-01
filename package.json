@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "stdout list to json string",
   "main": "index.js",
-  "bin": "src/bin.ts",
+  "bin": {
+    "l2j": "./src/bin.ts"
+  },
   "dependencies": {
     "commander": "^3.0.2"
   },
