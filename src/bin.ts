@@ -69,13 +69,13 @@ program.version(version);
 program
   .command("table [content]")
   .description("draw table of list")
-  .option("-s,--space", "number of space between colum to be ignore when split")
-  .option("-i,--index", "ignore n line")
-  .action(content => {
-    console.log(program, program.space, program.index);
+  .option("-s,--space [number]", "number of space between colum to be ignore when split")
+  .option("-i,--index [number...]", "ignore n line")
+  .action((content, options) => {
+    console.log(options.space, options.index);
     getContent(content)
       .then(content => {
-        const list = getList(content, program.space, program.index);
+        const list = getList(content, options.space, options.index);
         const output = table(list, {});
         console.log(output);
         process.exit(0);
