@@ -1,23 +1,22 @@
 const toList = (
   content: string,
-  ignoreLast: boolean = false,
-  ignoreSpace: number
+  ignoreSpace: number,
+  ignoreLines: number[] = []
 ) => {
   const list = content.split(/\n/).map(line => {
     return line.trim().split(new RegExp(`\\s{${ignoreSpace},}`));
   });
-  if (ignoreLast) {
-    list.pop();
-  }
+  list.filter((value, index) => ignoreLines.indexOf(index) < 0);
   return list;
 };
 
 export const list2Formated = (
   content: string,
-  ignoreLast: boolean = false,
-  ignoreSpace: number = 1
+  ignoreSpace: number = 1,
+  ignoreLines: number[] = []
 ) => {
-  const list = toList(content, ignoreLast, ignoreSpace);
+  console.log(ignoreSpace, ignoreLines);
+  const list = toList(content, ignoreSpace, ignoreLines);
   const firstLine: string[] = list[0];
   const outputList = [];
   for (const line of list) {
@@ -30,10 +29,11 @@ export const list2Formated = (
 export const list2Json = (
   content: string,
   titleLine: number = -1,
-  ignoreLast: boolean = false,
-  ignoreSpace: number = 1
+  ignoreSpace: number = 1,
+  ignoreLines: number[] = []
 ) => {
-  const list = toList(content, ignoreLast, ignoreSpace);
+  console.log(titleLine, ignoreSpace, ignoreLines);
+  const list = toList(content, ignoreSpace, ignoreLines);
   const hasTitleLine = titleLine >= 0;
   const firstLine: string[] = hasTitleLine
     ? list.splice(titleLine, 1)[0]
