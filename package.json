@@ -1,0 +1,23 @@
+{
+  "name": "list2json",
+  "version": "1.0.0",
+  "description": "stdout list to json string",
+  "main": "index.js",
+  "bin": "src/bin.ts",
+  "dependencies": {
+    "commander": "^3.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^12.7.8"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "stdout",
+    "list",
+    "json"
+  ],
+  "author": "xmmwc@qq.com",
+  "license": "ISC"
+}
