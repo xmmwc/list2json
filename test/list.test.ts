@@ -5,6 +5,6 @@ const content = `ID     Done       Have  ETA           Up    Down  Ratio  Status
 2   100%    9.70 GB  Done         0.0     0.0    1.0  Finished     A.I.Rising.2018.1080p.BluRay.x264.DTS-HD.MA.5.1-CHD
 Sum:          26.53 GB               0.0     0.0`;
 
-const result = list2Json(content, 0, true);
+const result = list2Json(content, 0, 1, [-1]);
 
 console.log(result);

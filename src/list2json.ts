@@ -3,11 +3,15 @@ const toList = (
   ignoreSpace: number,
   ignoreLines: number[] = []
 ) => {
-  const list = content.split(/\n/).map(line => {
+  const listFromStr = content.split(/\n/).map(line => {
     return line.trim().split(new RegExp(`\\s{${ignoreSpace},}`));
   });
-  list.filter((value, index) => ignoreLines.indexOf(index) < 0);
-  return list;
+  const ignoreList = ignoreLines.map((val) => {
+    return listFromStr.slice(val)[0]
+  })
+  return listFromStr.filter((val) => {
+    return ignoreList.indexOf(val) < 0
+  });
 };
 
 export const list2Formated = (
