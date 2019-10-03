@@ -1,8 +1,7 @@
-#!/usr/bin/env npx ts-node
+#!/usr/bin/env node
 
 import program from "commander";
 import { table } from "table";
-import { version } from "../package.json";
 import { list2Json, list2Formated } from "./list2json";
 
 const getObject = (
@@ -39,7 +38,7 @@ const parseArray = (str: string) => {
   }
 };
 
-program.version(version);
+program.version('1.0.0');
 
 program
   .command("json [content]")

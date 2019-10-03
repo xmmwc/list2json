@@ -44,7 +44,7 @@ export const list2Json = (
     : list[0];
   const jsonList = [];
   for (const line of list) {
-    const row = firstLine.reduce((cols: any[string], colVal, index) => {
+    const row = firstLine.reduce<object>((cols: any[string], colVal, index) => {
       const value = line[index];
       if (hasTitleLine) {
         cols[firstLine[index]] = value;

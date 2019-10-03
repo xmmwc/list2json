@@ -4,7 +4,7 @@
   "description": "stdout list to json string",
   "main": "index.js",
   "bin": {
-    "l2j": "./src/bin.ts"
+    "l2j": "./dist/bin.js"
   },
   "dependencies": {
     "commander": "^3.0.2",
@@ -15,7 +15,7 @@
     "@types/table": "^4.0.7"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc"
   },
   "keywords": [
     "stdout",
