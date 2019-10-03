@@ -17,14 +17,20 @@ const toList = (
 export const list2Formated = (
   content: string,
   ignoreSpace: number,
-  ignoreLines: number[]
+  ignoreLines: number[],
+  ignoreCols: number[]
 ) => {
   // console.log(ignoreSpace, ignoreLines);
   const list = toList(content, ignoreSpace, ignoreLines);
   const firstLine: string[] = list[0];
   const outputList = [];
   for (const line of list) {
-    const row = firstLine.map((col, index) => line[index]);
+    const row = firstLine.reduce<string[]>((cols: string[], colVal, index) => {
+      if (ignoreCols.indexOf(index) < 0) {
+        cols.push(line[index]);
+      }
+      return cols;
+    }, []);
     outputList.push(row);
   }
   return outputList;
@@ -34,7 +40,8 @@ export const list2Json = (
   content: string,
   titleLine: number,
   ignoreSpace: number,
-  ignoreLines: number[]
+  ignoreLines: number[],
+  ignoreCols: number[]
 ) => {
   // console.log(titleLine, ignoreSpace, ignoreLines);
   const list = toList(content, ignoreSpace, ignoreLines);
@@ -45,11 +52,13 @@ export const list2Json = (
   const jsonList = [];
   for (const line of list) {
     const row = firstLine.reduce<object>((cols: any[string], colVal, index) => {
-      const value = line[index];
-      if (hasTitleLine) {
-        cols[firstLine[index]] = value;
-      } else {
-        cols[`${index}`] = value;
+      if (ignoreCols.indexOf(index) < 0) {
+        const value = line[index];
+        if (hasTitleLine) {
+          cols[firstLine[index]] = value;
+        } else {
+          cols[`${index}`] = value;
+        }
       }
       return cols;
     }, {});

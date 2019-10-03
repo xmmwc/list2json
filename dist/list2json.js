@@ -11,18 +11,23 @@ const toList = (content, ignoreSpace, ignoreLines) => {
         return ignoreList.indexOf(val) < 0;
     });
 };
-exports.list2Formated = (content, ignoreSpace, ignoreLines) => {
+exports.list2Formated = (content, ignoreSpace, ignoreLines, ignoreCols) => {
     // console.log(ignoreSpace, ignoreLines);
     const list = toList(content, ignoreSpace, ignoreLines);
     const firstLine = list[0];
     const outputList = [];
     for (const line of list) {
-        const row = firstLine.map((col, index) => line[index]);
+        const row = firstLine.reduce((cols, colVal, index) => {
+            if (ignoreCols.indexOf(index) < 0) {
+                cols.push(line[index]);
+            }
+            return cols;
+        }, []);
         outputList.push(row);
     }
     return outputList;
 };
-exports.list2Json = (content, titleLine, ignoreSpace, ignoreLines) => {
+exports.list2Json = (content, titleLine, ignoreSpace, ignoreLines, ignoreCols) => {
     // console.log(titleLine, ignoreSpace, ignoreLines);
     const list = toList(content, ignoreSpace, ignoreLines);
     const hasTitleLine = titleLine >= 0;
@@ -32,12 +37,14 @@ exports.list2Json = (content, titleLine, ignoreSpace, ignoreLines) => {
     const jsonList = [];
     for (const line of list) {
         const row = firstLine.reduce((cols, colVal, index) => {
-            const value = line[index];
-            if (hasTitleLine) {
-                cols[firstLine[index]] = value;
-            }
-            else {
-                cols[`${index}`] = value;
+            if (ignoreCols.indexOf(index) < 0) {
+                const value = line[index];
+                if (hasTitleLine) {
+                    cols[firstLine[index]] = value;
+                }
+                else {
+                    cols[`${index}`] = value;
+                }
             }
             return cols;
         }, {});

@@ -7,8 +7,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const commander_1 = __importDefault(require("commander"));
 const table_1 = require("table");
 const list2json_1 = require("./list2json");
-const getObject = (content, titleLine, ignoreSpace, ignoreLines = []) => list2json_1.list2Json(content, titleLine, ignoreSpace, ignoreLines);
-const getList = (content, ignoreSpace, ignoreLines = []) => list2json_1.list2Formated(content, ignoreSpace, ignoreLines);
+const getObject = (content, titleLine, ignoreSpace, ignoreLines, ignoreCols) => list2json_1.list2Json(content, titleLine, ignoreSpace, ignoreLines, ignoreCols);
+const getList = (content, ignoreSpace, ignoreLines, ignoreCols) => list2json_1.list2Formated(content, ignoreSpace, ignoreLines, ignoreCols);
 const getContent = (content) => new Promise(resolve => {
     if (content) {
         resolve(content);
@@ -29,16 +29,17 @@ const parseArray = (str) => {
         return null;
     }
 };
-commander_1.default.version('1.0.0');
+commander_1.default.version("1.0.0");
 commander_1.default
     .command("json [content]")
     .description("output json string of list")
     .option("-t,--title [number]", "index of title line", 0)
     .option("-s,--space [number]", "number of space between colum to be ignore when split", 1)
-    .option("-i,--index [number...]", "ignore n line", parseArray, [])
+    .option("-l,--line [number...]", "ignore n line", parseArray, [])
+    .option("-c,--column [number...]", "ignore n column", parseArray, [])
     .action((content, options) => {
     getContent(content).then(content => {
-        const obj = getObject(content, options.title, options.space, options.index);
+        const obj = getObject(content, options.title, options.space, options.line, options.column);
         console.log(JSON.stringify(obj));
         process.exit(0);
     });
@@ -47,11 +48,12 @@ commander_1.default
     .command("table [content]")
     .description("draw table of list")
     .option("-s,--space [number]", "number of space between colum to be ignore when split", 1)
-    .option("-i,--index [number...]", "ignore n line", parseArray, [])
+    .option("-l,--line [number...]", "ignore n line", parseArray, [])
+    .option("-c,--column [number...]", "ignore n column", parseArray, [])
     .action((content, options) => {
     getContent(content)
         .then(content => {
-        const list = getList(content, options.space, options.index);
+        const list = getList(content, options.space, options.line, options.column);
         const output = table_1.table(list, {});
         console.log(output);
         process.exit(0);
